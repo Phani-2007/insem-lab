@@ -1,0 +1,973 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portfolio Dashboard</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --bg: #081426;
+    --panel: #101f35;
+    --border: #233957;
+    --blue: #1688ff;
+    --cyan: #16d5ed;
+    --white: #f4f8ff;
+    --muted: #9aacc5;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--white);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, input, textarea {
+    font: inherit;
+}
+
+/* DASHBOARD LAYOUT */
+.dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: #0b192c;
+    border-right: 1px solid var(--border);
+    padding: 25px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    font-size: 25px;
+    font-weight: bold;
+    color: var(--cyan);
+    padding: 0 12px 35px;
+}
+
+.brand span {
+    color: white;
+    font-size: 15px;
+}
+
+.profile-small {
+    text-align: center;
+    padding: 10px 0 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-small img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--cyan);
+    margin-bottom: 12px;
+}
+
+.profile-small h3 {
+    font-size: 16px;
+}
+
+.profile-small p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.menu-title {
+    color: #7186a3;
+    font-size: 11px;
+    margin: 25px 12px 12px;
+    letter-spacing: 1.5px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sidebar nav a {
+    padding: 13px 15px;
+    border-radius: 9px;
+    color: #b8c6dc;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: linear-gradient(90deg, #087cff44, #16d5ed18);
+    color: var(--cyan);
+    border-left: 3px solid var(--cyan);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 25px 12px 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* MAIN CONTENT */
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 28px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.topbar h1 {
+    font-size: 26px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status {
+    padding: 9px 13px;
+    border: 1px solid #176b57;
+    background: #103d36;
+    border-radius: 25px;
+    color: #60edbc;
+    font-size: 12px;
+}
+
+.menu-btn {
+    display: none;
+    background: var(--panel);
+    color: white;
+    border: 1px solid var(--border);
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* WELCOME BANNER */
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    padding: 30px;
+    border: 1px solid #245184;
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 90% 20%, #087cff55, transparent 35%),
+        linear-gradient(120deg, #102c50, #10203a);
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: clamp(23px, 3vw, 34px);
+    margin-bottom: 12px;
+}
+
+.welcome h2 span {
+    color: var(--cyan);
+}
+
+.welcome p {
+    color: #c2d0e5;
+    line-height: 1.7;
+    max-width: 550px;
+    font-size: 14px;
+}
+
+.button {
+    display: inline-block;
+    padding: 11px 17px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #078cff, #315cff);
+    color: white;
+    cursor: pointer;
+}
+
+.welcome-art {
+    font-size: 85px;
+    filter: drop-shadow(0 0 20px #1688ff55);
+}
+
+/* COMMON SECTIONS */
+section {
+    scroll-margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.section-heading h2 {
+    font-size: 20px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.card {
+    flex: 1 1 180px;
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 22px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--blue);
+}
+
+.stat-icon {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat-value {
+    font-size: 27px;
+    margin: 9px 0;
+}
+
+.stat-note {
+    font-size: 12px;
+    color: var(--cyan);
+}
+
+/* SKILLS */
+.skill-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.skill-card {
+    flex: 1 1 220px;
+}
+
+.skill-row {
+    margin-top: 19px;
+}
+
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 9px;
+}
+
+.skill-info span:last-child {
+    color: var(--cyan);
+}
+
+.progress {
+    height: 8px;
+    background: #263954;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #1688ff, #16d5ed);
+    border-radius: 20px;
+}
+
+/* PROJECTS */
+.project {
+    flex: 1 1 230px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.project img {
+    width: 100%;
+    height: 145px;
+    object-fit: cover;
+}
+
+.project-content {
+    padding: 18px;
+}
+
+.project-content h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.project-content p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.tag {
+    display: inline-block;
+    color: var(--cyan);
+    background: #087cff20;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 11px;
+    margin: 13px 4px 0 0;
+}
+
+/* EDUCATION */
+.education-item {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-top: 18px;
+}
+
+.education-icon {
+    flex-shrink: 0;
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    background: #087cff25;
+    border-radius: 10px;
+    font-size: 22px;
+}
+
+.education-item h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.education-item p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* ABOUT */
+.about-text {
+    color: #c4d2e6;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.about-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.detail {
+    flex: 1 1 180px;
+    padding: 13px;
+    background: #0b192c;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+}
+
+.detail strong {
+    display: block;
+    font-size: 12px;
+    color: var(--cyan);
+    margin-bottom: 5px;
+}
+
+.detail span {
+    font-size: 13px;
+}
+
+/* CONTACT */
+.contact-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.contact-info {
+    flex: 1 1 220px;
+}
+
+.contact-form {
+    flex: 2 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-form label {
+    color: #c4d2e6;
+    font-size: 13px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    background: #0a192d;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--cyan);
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+#formMessage {
+    color: var(--cyan);
+    font-size: 13px;
+}
+
+/* FOOTER */
+footer {
+    border-top: 1px solid var(--border);
+    padding: 22px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* TABLET */
+@media (max-width: 1000px) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        padding: 22px;
+    }
+
+    .welcome-art {
+        font-size: 60px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+    .dashboard {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 14px 20px;
+        display: block;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        padding: 0;
+    }
+
+    .profile-small,
+    .menu-title,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .sidebar-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sidebar nav {
+        display: none;
+        margin-top: 18px;
+    }
+
+    .sidebar nav.open {
+        display: flex;
+    }
+
+    .main {
+        padding: 18px;
+    }
+
+    .topbar h1 {
+        font-size: 22px;
+    }
+
+    .welcome {
+        padding: 23px;
+    }
+
+    .welcome-art {
+        display: none;
+    }
+
+    .cards,
+    .skill-layout,
+    .contact-grid {
+        flex-direction: column;
+    }
+
+    .card {
+        flex-basis: auto;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 400px) {
+    .main {
+        padding: 13px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+    }
+
+    .status {
+        display: none;
+    }
+
+    .welcome {
+        padding: 18px;
+    }
+
+    .welcome h2 {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="brand">RP <span>Portfolio</span></div>
+            <button class="menu-btn" id="menuBtn"
+                    aria-label="Toggle navigation"
+                    aria-expanded="false">☰</button>
+        </div>
+
+        <div class="profile-small">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"
+                 alt="Student profile">
+            <h3>Phani Kumar</h3>
+            <p>B.Tech Student</p>
+        </div>
+
+        <p class="menu-title">MAIN MENU</p>
+
+        <nav id="navLinks">
+            <a class="active" href="#home">⌂ &nbsp; Dashboard</a>
+            <a href="#about">◉ &nbsp; About Me</a>
+            <a href="#skills">⚡ &nbsp; My Skills</a>
+            <a href="#projects">▣ &nbsp; Projects</a>
+            <a href="#education">🎓 &nbsp; Education</a>
+            <a href="#contact">✉ &nbsp; Contact</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Keep learning. Keep growing.</p>
+            <p style="margin-top: 8px;">© 2026 Student Portfolio</p>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>My Dashboard</h1>
+                <p>Welcome back! Here's your portfolio overview.</p>
+            </div>
+            <div class="top-actions">
+                <span class="status">● Available</span>
+            </div>
+        </header>
+
+        <!-- HOME -->
+        <section id="home">
+            <div class="welcome">
+                <div>
+                    <p style="color:var(--cyan); margin-bottom:10px;">
+                        STUDENT PORTFOLIO
+                    </p>
+                    <h2>Hello, I'm <span>Phani Kumar!</span></h2>
+                    <p>
+                        An aspiring web developer and B.Tech student
+                        passionate about creating modern websites,
+                        learning new technologies and solving problems.
+                    </p>
+                    <a href="#projects" class="button">Explore My Projects →</a>
+                </div>
+                <div class="welcome-art">💻</div>
+            </div>
+
+            <div class="section-heading">
+                <div>
+                    <h2>Portfolio Overview</h2>
+                    <p>A quick look at my learning journey.</p>
+                </div>
+            </div>
+
+            <div class="cards">
+                <article class="card">
+                    <div class="stat-icon">💻</div>
+                    <p class="stat-label">Projects</p>
+                    <h3 class="stat-value">03</h3>
+                    <p class="stat-note">Personal projects</p>
+                </article>
+
+                <article class="card">
+                    <div class="stat-icon">⚡</div>
+                    <p class="stat-label">Technical Skills</p>
+                    <h3 class="stat-value">06</h3>
+                    <p class="stat-note">Always improving</p>
+                </article>
+
+                <article class="card">
+                    <div class="stat-icon">🎓</div>
+                    <p class="stat-label">Education</p>
+                    <h3 class="stat-value">B.Tech</h3>
+                    <p class="stat-note">Computer Science</p>
+                </article>
+
+                <article class="card">
+                    <div class="stat-icon">🚀</div>
+                    <p class="stat-label">Career Goal</p>
+                    <h3 class="stat-value">Developer</h3>
+                    <p class="stat-note">Learning every day</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about">
+            <div class="section-heading">
+                <div>
+                    <h2>About Me</h2>
+                    <p>Get to know me better.</p>
+                </div>
+            </div>
+
+            <article class="card">
+                <p class="about-text">
+                    I am an enthusiastic student interested in front-end
+                    development and programming. I enjoy designing
+                    responsive websites, exploring new technologies
+                    and turning ideas into useful digital experiences.
+                    My goal is to become a skilled software developer.
+                </p>
+
+                <div class="about-details">
+                    <div class="detail">
+                        <strong>FULL NAME</strong>
+                        <span>Ravuri Venkata Phani Kumar</span>
+                    </div>
+                    <div class="detail">
+                        <strong>COURSE</strong>
+                        <span>B.Tech</span>
+                    </div>
+                    <div class="detail">
+                        <strong>LOCATION</strong>
+                        <span>Andhra Pradesh, India</span>
+                    </div>
+                    <div class="detail">
+                        <strong>INTEREST</strong>
+                        <span>Web Development</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills">
+            <div class="section-heading">
+                <div>
+                    <h2>My Technical Skills</h2>
+                    <p>Technologies I am learning.</p>
+                </div>
+            </div>
+
+            <div class="skill-layout">
+                <article class="card skill-card">
+                    <h3>Programming & Development</h3>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>HTML5</span><span>90%</span></div>
+                        <div class="progress"><span style="width:90%"></span></div>
+                    </div>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>CSS3</span><span>85%</span></div>
+                        <div class="progress"><span style="width:85%"></span></div>
+                    </div>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>JavaScript</span><span>80%</span></div>
+                        <div class="progress"><span style="width:80%"></span></div>
+                    </div>
+                </article>
+
+                <article class="card skill-card">
+                    <h3>Other Technologies</h3>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>Python</span><span>75%</span></div>
+                        <div class="progress"><span style="width:75%"></span></div>
+                    </div>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>C Programming</span><span>70%</span></div>
+                        <div class="progress"><span style="width:70%"></span></div>
+                    </div>
+
+                    <div class="skill-row">
+                        <div class="skill-info"><span>Git & GitHub</span><span>60%</span></div>
+                        <div class="progress"><span style="width:60%"></span></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+            <div class="section-heading">
+                <div>
+                    <h2>My Projects</h2>
+                    <p>Some of my creative work.</p>
+                </div>
+            </div>
+
+            <div class="cards">
+                <article class="card project">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=700&q=80"
+                         alt="Laptop and workspace">
+                    <div class="project-content">
+                        <h3>Budget Planner</h3>
+                        <p>A website for organizing expenses, budgets and savings.</p>
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                </article>
+
+                <article class="card project">
+                    <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=700&q=80"
+                         alt="Study materials">
+                    <div class="project-content">
+                        <h3>Student Result System</h3>
+                        <p>A web application for managing student results.</p>
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                </article>
+
+                <article class="card project">
+                    <img src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=700&q=80"
+                         alt="Weather and clouds">
+                    <div class="project-content">
+                        <h3>Weather Dashboard</h3>
+                        <p>A dashboard for displaying weather information.</p>
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">API</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="education">
+            <div class="section-heading">
+                <div>
+                    <h2>Education</h2>
+                    <p>My academic journey.</p>
+                </div>
+            </div>
+
+            <article class="card">
+                <div class="education-item">
+                    <div class="education-icon">🎓</div>
+                    <div>
+                        <h3>B.Tech - Computer Science</h3>
+                        <p>KLU, Vaddeswaram</p>
+                        <p>Undergraduate Education</p>
+                    </div>
+                </div>
+
+                <div class="education-item">
+                    <div class="education-icon">🏫</div>
+                    <div>
+                        <h3>Intermediate (MPC)</h3>
+                        <p>Your Intermediate College</p>
+                        <p>Enter your study years</p>
+                    </div>
+                </div>
+
+                <div class="education-item">
+                    <div class="education-icon">📚</div>
+                    <div>
+                        <h3>School Education</h3>
+                        <p>Your School Name</p>
+                        <p>Enter your study years</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <div class="section-heading">
+                <div>
+                    <h2>Contact Me</h2>
+                    <p>Let's connect and create something great.</p>
+                </div>
+            </div>
+
+            <div class="contact-grid">
+                <article class="card contact-info">
+                    <h3>Get In Touch</h3>
+                    <p style="color:var(--muted); margin-top:15px;">
+                        ✉ phani@example.com
+                    </p>
+                    <p style="color:var(--muted); margin-top:15px;">
+                        ☎ +91 9876543210
+                    </p>
+                    <p style="color:var(--muted); margin-top:15px;">
+                        📍 Andhra Pradesh, India
+                    </p>
+                </article>
+
+                <form class="card contact-form" id="contactForm">
+                    <label for="name">Your Name</label>
+                    <input id="name" type="text"
+                           placeholder="Enter your name" required>
+
+                    <label for="email">Your Email</label>
+                    <input id="email" type="email"
+                           placeholder="Enter your email" required>
+
+                    <label for="message">Your Message</label>
+                    <textarea id="message" rows="4"
+                              placeholder="Write your message"
+                              required></textarea>
+
+                    <button class="button" type="submit">Send Message →</button>
+                    <p id="formMessage" role="status"></p>
+                </form>
+            </div>
+        </section>
+
+        <footer>
+            © 2026 Student Portfolio | Designed with HTML, CSS & JavaScript
+        </footer>
+
+    </main>
+</div>
+
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
+
+menuBtn.addEventListener("click", function () {
+    navLinks.classList.toggle("open");
+
+    const isOpen = navLinks.classList.contains("open");
+    menuBtn.setAttribute("aria-expanded", isOpen);
+    menuBtn.textContent = isOpen ? "✕" : "☰";
+});
+
+navLinks.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+        navLinks.querySelectorAll("a").forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        link.classList.add("active");
+        navLinks.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.textContent = "☰";
+    });
+});
+
+document.getElementById("contactForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    document.getElementById("formMessage").textContent =
+        "Thank you, " + name + "! The demo form was submitted successfully.";
+
+    this.reset();
+});
+</script>
+
+</body>
+</html>
